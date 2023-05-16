@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "convert_bccwj_xml",
+    "convert_unidic_csv",
+]
+
+exclude = [
+    "vaporetto",
+]

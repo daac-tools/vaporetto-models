@@ -1,0 +1,3 @@
+[submodule "vaporetto"]
+	path = vaporetto
+	url = https://github.com/daac-tools/vaporetto
