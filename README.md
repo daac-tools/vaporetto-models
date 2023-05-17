@@ -6,8 +6,10 @@ each model.
 
 ## Usage
 
-Create the `resources` directory directly under the repository root, copy the BCCWJ M-XML
-directory and the UniDic csv file into it, and then run `build.sh` in the `models` directory.
+Create the `resources` directory directly under the repository root, copy `*.xml` files contained
+in the BCCWJ M-XML directory and `lex_3_1.csv` contained in
+[UniDic 3.1.1](https://clrd.ninjal.ac.jp/unidic/back_number.html#unidic_cwj) into it, and then run
+`build.sh` in the `models` directory.
 
 ## License
 
