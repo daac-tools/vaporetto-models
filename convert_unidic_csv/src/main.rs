@@ -13,12 +13,17 @@ use vaporetto::{CharacterBoundary, Sentence};
     about = "A program to parse XML files of BCCWJ."
 )]
 struct Args {
+    /// Feature index to be used for tags./
+    ///
+    /// If multiple IDs are specified, separated by `|`, the value of the next attribute is used if
+    /// the previous one does not exist.
     #[clap(long)]
     tag: Vec<String>,
 
     /// Input CSV file.
     csv_file: PathBuf,
 
+    /// String representing null.
     #[clap(long, default_value = "*")]
     null_str: String,
 }
