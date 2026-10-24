@@ -1,0 +1,10 @@
+/target
+/Cargo.lock
+
+# Language resources and data generated from them must not be committed.
+/resources
+/models/work
+
+# Build artifacts
+/models/*.tar.xz
+/models/*/*.model.zst

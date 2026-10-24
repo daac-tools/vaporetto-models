@@ -28,10 +28,7 @@ struct Args {
     null_str: String,
 }
 
-const PLACE_HOLDER: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"\{(\d+)\}").unwrap()
-});
-
+const PLACE_HOLDER: Lazy<Regex> = Lazy::new(|| Regex::new(r"\{(\d+)\}").unwrap());
 
 struct TagPattern {
     fragments: Vec<String>,
@@ -45,10 +42,7 @@ impl TagPattern {
             indices.push(cap.get(1).unwrap().as_str().parse().unwrap());
         }
         let fragments = PLACE_HOLDER.split(pattern).map(String::from).collect();
-        Self {
-            fragments,
-            indices,
-        }
+        Self { fragments, indices }
     }
 
     fn check(&self, record: &StringRecord, null_str: &str) -> bool {
@@ -80,7 +74,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open(args.csv_file)?;
     let mut rdr = csv::Reader::from_reader(file);
 
-    let patterns: Vec<Vec<TagPattern>> = args.tag.iter().map(|tag_pat| tag_pat.split('|').map(|pat| TagPattern::new(pat)).collect()).collect();
+    let patterns: Vec<Vec<TagPattern>> = args
+        .tag
+        .iter()
+        .map(|tag_pat| tag_pat.split('|').map(|pat| TagPattern::new(pat)).collect())
+        .collect();
 
     let mut s = Sentence::default();
     let mut buf = String::new();

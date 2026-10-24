@@ -5,7 +5,7 @@ DIRNAME="$(dirname $0)"
 
 mkdir -p "${DIRNAME}/../work"
 
-find "${DIRNAME}/../../resources" -name "*.xml" \
+find "${DIRNAME}/../../resources" -maxdepth 1 -name "*.xml" \
     | sort \
     | xargs cargo run --manifest-path "${DIRNAME}/../../convert_bccwj_xml/Cargo.toml" --release -- \
         --luw \
