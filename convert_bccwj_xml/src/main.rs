@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use std::path::PathBuf;
 
 use clap::Parser;
@@ -24,6 +24,10 @@ struct Args {
     #[clap(long)]
     attr: Vec<String>,
 
+    /// A file containing words, one per line, that are not given tags.
+    #[clap(long)]
+    untagged_words: Option<PathBuf>,
+
     /// Input XML files.
     xml_files: Vec<PathBuf>,
 }
@@ -38,6 +42,7 @@ fn parse_xml(
     luw: bool,
     attrs: &HashMap<Vec<u8>, (usize, usize)>,
     n_attrs: usize,
+    untagged_words: &HashSet<String>,
 ) -> quick_xml::Result<Vec<String>> {
     let mut results = vec![];
     let mut rdr = quick_xml::Reader::from_reader(rdr);
@@ -102,6 +107,9 @@ fn parse_xml(
                 } else if e.name().as_ref() == word_tag {
                     let mut token = token.take().unwrap();
                     token.surface = word.replace("\r\n", "");
+                    if untagged_words.contains(&token.surface) {
+                        token.tags.fill(None);
+                    }
                     word.clear();
                     tokens.push(token);
                 }
@@ -130,9 +138,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    let mut untagged_words = HashSet::new();
+    if let Some(path) = args.untagged_words {
+        let mut buf = String::new();
+        File::open(path)?.read_to_string(&mut buf)?;
+        untagged_words.extend(buf.lines().filter(|l| !l.is_empty()).map(String::from));
+    }
+
     for path in args.xml_files {
         let rdr = BufReader::new(File::open(path)?);
-        let results = parse_xml(rdr, args.luw, &attrs, args.attr.len())?;
+        let results = parse_xml(rdr, args.luw, &attrs, args.attr.len(), &untagged_words)?;
         for result in results {
             println!("{}", result);
         }
